@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agentica | מגדירות מחדש חוויות לקוח</title>
+  <meta name="description" content="מגדירות מחדש חווית לקוח ובונות את ה-Agents שיישמו אותה." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─────────────────────────────────────
+       TOKENS
+    ───────────────────────────────────── */
+    :root {
+      --navy:        #2C2C2C;
+      --navy-mid:    #444444;
+      --gold:        #B8742A;
+      --gold-light:  #D4944A;
+      --gold-pale:   #F5EDD4;
+      --cream:       #F8F4EE;
+      --cream-dark:  #EDE8DF;
+      --white:       #FFFFFF;
+      --text:        #2C2C2C;
+      --text-mid:    #5A5A5A;
+      --text-light:  #8A8A8A;
+      --radius:      14px;
+      --radius-lg:   22px;
+      --shadow:      0 4px 32px rgba(13,27,62,.08);
+      --shadow-hover:0 10px 48px rgba(13,27,62,.14);
+    }
+
+    /* ─────────────────────────────────────
+       RESET & BASE
+    ───────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Heebo', sans-serif;
+      background: var(--cream);
+      color: var(--text);
+      direction: rtl;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    img { max-width: 100%; display: block; }
+    a { text-decoration: none; color: inherit; }
+
+    /* ─────────────────────────────────────
+       NAVBAR
+    ───────────────────────────────────── */
+    .navbar {
+      position: fixed;
+      inset-inline: 0;
+      top: 0;
+      z-index: 999;
+      padding: 1.4rem 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-direction: row; /* in dir=rtl, first item = RIGHT side */
+      transition: all .35s ease;
+    }
+    .navbar.scrolled {
+      background: rgba(248,244,238,.96);
+      backdrop-filter: blur(18px);
+      box-shadow: 0 2px 24px rgba(13,27,62,.08);
+      padding: .9rem 3rem;
+    }
+    .nav-logo img {
+      height: 64px;
+      width: auto;
+    }
+    .nav-cta {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      background: #25D366;
+      color: #fff;
+      font-weight: 700;
+      font-size: .9rem;
+      padding: .6rem 1.5rem;
+      border-radius: 999px;
+      transition: all .2s ease;
+      white-space: nowrap;
+    }
+    .nav-cta:hover {
+      background: #1ebe5d;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(37,211,102,.35);
+    }
+
+    /* ─────────────────────────────────────
+       HERO — VIDEO BACKGROUND
+    ───────────────────────────────────── */
+    .hero {
+      min-height: 100vh;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 5rem 2rem 2rem;
+      overflow: hidden;
+      background: var(--cream);
+      gap: 0;
+    }
+    .hero-video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+      transition: opacity 1.8s ease-in-out;
+    }
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to top,
+        rgba(13,27,62,.75) 0%,
+        rgba(13,27,62,.35) 50%,
+        rgba(13,27,62,.15) 100%
+      );
+      z-index: 1;
+      transition: opacity 1.8s ease-in-out;
+    }
+    .hero.video-done .hero-video,
+    .hero.video-done .hero-overlay {
+      opacity: 0;
+      pointer-events: none;
+    }
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 760px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+    }
+    .hero h1 {
+      font-size: clamp(2.4rem, 5vw, 4.4rem);
+      font-weight: 900;
+      color: var(--navy);
+      line-height: 1.18;
+      margin-bottom: .6rem;
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 1s ease .9s, transform 1s ease .9s;
+    }
+    .hero h1 .gold { color: var(--gold); }
+    .hero-sub {
+      font-size: clamp(1rem, 2vw, 1.22rem);
+      font-weight: 400;
+      color: var(--text-mid);
+      line-height: 1.7;
+      margin-bottom: 2.5rem;
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 1s ease 1.3s, transform 1s ease 1.3s;
+      margin-bottom: 1.4rem;
+    }
+    .hero-actions {
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 1s ease 1.7s, transform 1s ease 1.7s;
+    }
+    .hero.content-visible h1,
+    .hero.content-visible .hero-sub,
+    .hero.content-visible .hero-actions {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .btn-primary {
+      background: var(--gold);
+      color: var(--navy);
+      font-weight: 800;
+      font-size: 1rem;
+      padding: .9rem 2.4rem;
+      border-radius: 999px;
+      border: 2px solid var(--gold);
+      transition: all .25s ease;
+    }
+    .btn-primary:hover {
+      background: var(--gold-light);
+      border-color: var(--gold-light);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 32px rgba(196,151,58,.4);
+    }
+    .btn-outline {
+      background: transparent;
+      color: var(--navy);
+      font-weight: 600;
+      font-size: 1rem;
+      padding: .9rem 2.4rem;
+      border-radius: 999px;
+      border: 2px solid rgba(13,27,62,.3);
+      transition: all .25s ease;
+    }
+    .btn-outline:hover {
+      border-color: var(--navy);
+      background: rgba(13,27,62,.05);
+    }
+    .hero-logo-large {
+      height: calc(100vh - 30rem);
+      max-height: 520px;
+      min-height: 220px;
+      width: auto;
+      margin: 0 auto .6rem;
+      opacity: 0;
+      transform: scale(0.9);
+      transition: opacity 1.4s ease .3s, transform 1.4s cubic-bezier(.22,1,.36,1) .3s;
+    }
+    .hero.content-visible .hero-logo-large {
+      opacity: 1;
+      transform: scale(1);
+    }
+    .hero-scroll {
+      position: absolute;
+      bottom: 2.2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
+    }
+    .scroll-line {
+      width: 1px;
+      height: 48px;
+      background: linear-gradient(to bottom, rgba(255,255,255,.6), transparent);
+      margin: 0 auto;
+      animation: scrollPulse 2s infinite;
+    }
+    @keyframes scrollPulse {
+      0%,100% { opacity: .5; }
+      50%      { opacity: 1; }
+    }
+
+    /* ─────────────────────────────────────
+       SECTION BASE
+    ───────────────────────────────────── */
+    section { padding: 6rem 2rem; }
+    .container { max-width: 1100px; margin: 0 auto; }
+    .section-label {
+      display: inline-block;
+      font-size: .76rem;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1rem;
+      padding: .3rem .9rem;
+      border: 1px solid rgba(196,151,58,.35);
+      border-radius: 999px;
+      background: rgba(196,151,58,.07);
+    }
+    .section-title {
+      font-size: clamp(1.8rem, 3.2vw, 2.7rem);
+      font-weight: 800;
+      color: var(--navy);
+      line-height: 1.25;
+      margin-bottom: 1.1rem;
+    }
+    .section-title.light { color: var(--white); }
+    .section-sub {
+      font-size: 1.05rem;
+      color: var(--text-mid);
+      line-height: 1.78;
+      max-width: 640px;
+    }
+    .section-sub.light { color: rgba(255,255,255,.7); }
+
+    /* ─────────────────────────────────────
+       WHY NOW
+    ───────────────────────────────────── */
+    .why-now { background: var(--white); }
+    .why-header { margin-bottom: 3.5rem; }
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+    }
+    .why-card {
+      padding: 2.4rem;
+      background: var(--cream);
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(13,27,62,.07);
+      transition: all .3s ease;
+    }
+    .why-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-hover);
+      border-color: rgba(196,151,58,.2);
+    }
+    .why-icon {
+      width: 54px;
+      height: 54px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.4rem;
+      background: var(--gold-pale);
+      border: 1px solid rgba(196,151,58,.3);
+    }
+    .why-icon svg { width: 26px; height: 26px; }
+    .why-card h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: .6rem;
+    }
+    .why-card p {
+      font-size: .95rem;
+      color: var(--text-mid);
+      line-height: 1.72;
+    }
+
+    /* ─────────────────────────────────────
+       WHAT WE DO — LIGHT
+    ───────────────────────────────────── */
+    .what-we-do { background: var(--cream); }
+    .what-header { max-width: 680px; margin-bottom: 3.5rem; }
+    .what-header .section-sub { color: var(--text-mid); }
+
+    /* Process flow */
+    .process-flow {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr auto 1fr;
+      gap: 0;
+      align-items: center;
+      margin-bottom: 3rem;
+    }
+    .flow-step {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      padding: 2rem 1.8rem;
+      border: 1px solid rgba(13,27,62,.08);
+      text-align: center;
+      transition: all .3s ease;
+      position: relative;
+    }
+    .flow-step:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-hover);
+      border-color: rgba(196,151,58,.3);
+    }
+    .flow-step-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      color: rgba(196,151,58,.25);
+      line-height: 1;
+      margin-bottom: .6rem;
+    }
+    .flow-step-icon {
+      width: 48px;
+      height: 48px;
+      background: var(--gold-pale);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto .9rem;
+      border: 1px solid rgba(196,151,58,.3);
+    }
+    .flow-step-icon svg { width: 22px; height: 22px; }
+    .flow-step h3 {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--navy);
+      margin-bottom: .5rem;
+    }
+    .flow-step p {
+      font-size: .88rem;
+      color: var(--text-mid);
+      line-height: 1.65;
+    }
+    .flow-arrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 .8rem;
+      color: var(--gold);
+    }
+    .flow-arrow svg {
+      width: 28px; height: 28px;
+      transform: scaleX(-1); /* RTL: arrow points left */
+    }
+
+    /* ─────────────────────────────────────
+       SOLUTIONS
+    ───────────────────────────────────── */
+    .solutions { background: var(--white); }
+    .solutions-header { max-width: 640px; margin-bottom: 3.5rem; }
+    .solutions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+    }
+    .sol-card {
+      background: var(--cream);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      border: 1px solid rgba(13,27,62,.07);
+      transition: all .3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .sol-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; right: 0;
+      width: 80px; height: 80px;
+      background: radial-gradient(circle at bottom right, rgba(196,151,58,.12), transparent 70%);
+    }
+    .sol-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-hover);
+      border-color: rgba(196,151,58,.25);
+    }
+    .sol-icon {
+      width: 48px;
+      height: 48px;
+      background: var(--gold-pale);
+      border-radius: 12px;
+      border: 1px solid rgba(196,151,58,.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.1rem;
+    }
+    .sol-icon svg { width: 22px; height: 22px; }
+    .sol-card h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: .5rem;
+    }
+    .sol-card p {
+      font-size: .88rem;
+      color: var(--text-mid);
+      line-height: 1.65;
+    }
+    .sol-tag {
+      display: flex;
+      gap: .4rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+    .tag {
+      font-size: .72rem;
+      font-weight: 600;
+      color: var(--gold);
+      background: rgba(196,151,58,.1);
+      padding: .22rem .65rem;
+      border-radius: 999px;
+    }
+
+    /* ─────────────────────────────────────
+       PROCESS (4-STEPS)
+    ───────────────────────────────────── */
+    .steps-section { background: var(--cream); }
+    .steps-header { max-width: 600px; margin-bottom: 4rem; }
+    .four-steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 2rem;
+    }
+    .step {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      padding: 2.2rem 1.8rem;
+      border: 1px solid rgba(13,27,62,.07);
+      transition: all .3s ease;
+    }
+    .step:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-hover);
+      border-color: rgba(196,151,58,.2);
+    }
+    .step-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.8rem;
+      color: rgba(196,151,58,.3);
+      line-height: 1;
+      margin-bottom: .6rem;
+    }
+    .step-subtitle {
+      font-size: .75rem;
+      font-weight: 700;
+      color: var(--gold);
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      margin-bottom: .7rem;
+    }
+    .step h3 {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--navy);
+      margin-bottom: .5rem;
+    }
+    .step p {
+      font-size: .88rem;
+      color: var(--text-mid);
+      line-height: 1.65;
+      margin-bottom: .5rem;
+    }
+    .step-meta {
+      font-size: .78rem;
+      color: var(--text-light);
+      border-top: 1px solid rgba(13,27,62,.07);
+      padding-top: .7rem;
+      margin-top: .7rem;
+    }
+
+    /* ─────────────────────────────────────
+       WHY US — LIGHT
+    ───────────────────────────────────── */
+    .why-us { background: var(--white); }
+    .why-us-header { max-width: 680px; margin-bottom: 3.5rem; }
+    .why-us-intro {
+      font-size: 1.15rem;
+      font-weight: 500;
+      color: var(--navy);
+      background: var(--gold-pale);
+      border: 1px solid rgba(196,151,58,.35);
+      border-radius: var(--radius-lg);
+      padding: 1.6rem 2rem;
+      margin-bottom: 2.5rem;
+      line-height: 1.7;
+    }
+    .why-us-intro strong { color: var(--gold); }
+    .differentiators {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+    }
+    .diff-card {
+      padding: 2rem;
+      background: var(--cream);
+      border: 1px solid rgba(13,27,62,.07);
+      border-radius: var(--radius-lg);
+      transition: all .3s ease;
+    }
+    .diff-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-hover);
+      border-color: rgba(196,151,58,.2);
+    }
+    .diff-num {
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .18em;
+      color: var(--gold);
+      margin-bottom: .8rem;
+    }
+    .diff-card h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: .5rem;
+    }
+    .diff-card p {
+      font-size: .9rem;
+      color: var(--text-mid);
+      line-height: 1.68;
+    }
+
+    /* ─────────────────────────────────────
+       ABOUT
+    ───────────────────────────────────── */
+    .about { background: var(--cream); }
+    .about-header { max-width: 560px; margin-bottom: 3.5rem; }
+    .team-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2.5rem;
+    }
+    .team-card {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      border: 1px solid rgba(13,27,62,.07);
+      box-shadow: var(--shadow);
+      transition: all .3s ease;
+    }
+    .team-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-hover);
+    }
+    .team-photo-wrap {
+      height: 320px;
+      overflow: hidden;
+      background: var(--cream-dark);
+    }
+    .team-photo-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+    }
+    .team-info { padding: 1.8rem 2rem; }
+    .team-info h3 {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--navy);
+      margin-bottom: .2rem;
+    }
+    .team-role {
+      font-size: .85rem;
+      font-weight: 600;
+      color: var(--gold);
+      margin-bottom: 1rem;
+    }
+    .team-info p {
+      font-size: .9rem;
+      color: var(--text-mid);
+      line-height: 1.72;
+    }
+    .team-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem;
+      margin-top: 1.2rem;
+    }
+    .team-tag {
+      font-size: .74rem;
+      font-weight: 600;
+      padding: .28rem .8rem;
+      background: var(--cream);
+      color: var(--navy);
+      border-radius: 999px;
+      border: 1px solid rgba(13,27,62,.1);
+    }
+
+    /* ─────────────────────────────────────
+       CTA
+    ───────────────────────────────────── */
+    .cta-section {
+      background: var(--gold-pale);
+      border-top: 1px solid rgba(184,116,42,.2);
+      text-align: center;
+      padding: 7rem 2rem;
+    }
+    .cta-section h2 {
+      font-size: clamp(1.9rem, 3.8vw, 3rem);
+      font-weight: 800;
+      color: var(--navy);
+      margin: 1.2rem auto;
+      max-width: 600px;
+    }
+    .cta-section p {
+      font-size: 1.08rem;
+      color: var(--text-mid);
+      margin: 0 auto 2.5rem;
+      max-width: 460px;
+      line-height: 1.75;
+    }
+    .wa-btn-large {
+      display: inline-flex;
+      align-items: center;
+      gap: .75rem;
+      background: #25D366;
+      color: #fff;
+      font-weight: 800;
+      font-size: 1.1rem;
+      padding: 1.1rem 2.8rem;
+      border-radius: 999px;
+      transition: all .25s ease;
+    }
+    .wa-btn-large:hover {
+      background: #1ebe5d;
+      transform: translateY(-3px);
+      box-shadow: 0 14px 40px rgba(37,211,102,.4);
+    }
+
+    /* ─────────────────────────────────────
+       FOOTER
+    ───────────────────────────────────── */
+    footer {
+      background: var(--cream-dark);
+      padding: 2.5rem 2rem;
+      text-align: center;
+    }
+    footer img { height: 34px; margin: 0 auto .9rem; opacity: .65; }
+    footer p { font-size: .82rem; color: var(--text-light); }
+
+    /* ─────────────────────────────────────
+       WHATSAPP FLOAT
+    ───────────────────────────────────── */
+    .wa-float {
+      position: fixed;
+      bottom: 2rem;
+      left: 2rem;
+      z-index: 888;
+      width: 58px;
+      height: 58px;
+      background: #25D366;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 24px rgba(37,211,102,.45);
+      transition: all .25s ease;
+      animation: waPulse 3s infinite;
+    }
+    .wa-float:hover {
+      transform: scale(1.1);
+      box-shadow: 0 10px 36px rgba(37,211,102,.65);
+    }
+    @keyframes waPulse {
+      0%,100% { box-shadow: 0 6px 24px rgba(37,211,102,.45); }
+      50%      { box-shadow: 0 8px 36px rgba(37,211,102,.7); }
+    }
+
+    /* ─────────────────────────────────────
+       RESPONSIVE
+    ───────────────────────────────────── */
+    @media (max-width: 860px) {
+      .process-flow {
+        grid-template-columns: 1fr;
+        gap: 0;
+      }
+      .flow-arrow { transform: rotate(90deg); padding: .4rem 0; }
+    }
+    @media (max-width: 768px) {
+      .navbar { padding: 1rem 1.4rem; }
+      .navbar.scrolled { padding: .8rem 1.4rem; }
+      section { padding: 4.5rem 1.3rem; }
+      .hero { padding: 0 1.4rem 6rem; }
+      .hero-actions { flex-direction: column; align-items: center; }
+      .btn-primary, .btn-outline { width: 100%; text-align: center; }
+      .team-grid { grid-template-columns: 1fr; }
+      .team-photo-wrap { height: 260px; }
+      .four-steps { grid-template-columns: 1fr; }
+      .solutions-grid { grid-template-columns: 1fr; }
+      .why-grid { grid-template-columns: 1fr; }
+      .differentiators { grid-template-columns: 1fr; }
+    }
+
+    /* ─────────────────────────────────────
+       LOGO VISUAL LANGUAGE
+       — thin lines, spaced type, geometric accents
+    ───────────────────────────────────── */
+
+    /* Spaced uppercase on labels — like AGENTICA */
+    .section-label {
+      letter-spacing: .22em;
+      font-family: 'Heebo', sans-serif;
+    }
+
+    /* Decorative thin-line divider */
+    .gold-divider {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+      margin-bottom: 2.5rem;
+    }
+    .gold-divider-line {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to left, transparent, var(--gold), transparent);
+      opacity: .45;
+    }
+    .gold-divider-mark {
+      width: 8px;
+      height: 8px;
+      border: 1.5px solid var(--gold);
+      transform: rotate(45deg);
+      opacity: .7;
+      flex-shrink: 0;
+    }
+
+    /* Thin geometric square accent on section headers */
+    .section-header-accent {
+      width: 36px;
+      height: 36px;
+      border: 1.5px solid rgba(184,116,42,.35);
+      position: relative;
+      margin-bottom: 1.4rem;
+    }
+    .section-header-accent::after {
+      content: '';
+      position: absolute;
+      inset: 5px;
+      border: 1px solid rgba(184,116,42,.25);
+      border-radius: 50%;
+    }
+
+    /* Letter-spacing for step numbers */
+    .step-subtitle { letter-spacing: .18em; }
+
+    /* ─────────────────────────────────────
+       FADE-IN
+    ───────────────────────────────────── */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(26px);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+    .delay-1 { transition-delay: .1s; }
+    .delay-2 { transition-delay: .2s; }
+    .delay-3 { transition-delay: .3s; }
+    .delay-4 { transition-delay: .4s; }
+  </style>
+</head>
+
+<body>
+
+<!-- ── NAVBAR ── -->
+<nav class="navbar" id="navbar">
+  <div class="nav-logo">
+    <img src="Agentica_transparent.png" alt="Agentica" />
+  </div>
+  <a href="https://wa.me/972523124326?text=היי,%20אשמח%20לשמוע%20עוד%20על%20Agentica" class="nav-cta" target="_blank">
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    דברו איתנו
+  </a>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <video class="hero-video" autoplay muted loop playsinline>
+    <source src="INTRO VIDEO.mp4" type="video/mp4" />
+  </video>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <img src="Agentica_transparent.png" alt="Agentica" class="hero-logo-large" />
+    <h1>מגדירות מחדש<br /><span class="gold">חווית לקוח</span></h1>
+    <p class="hero-sub">אנחנו מעצבות את מסע הלקוח מחדש<br />ובונות את ה-Agents שמפעילים אותה</p>
+    <div class="hero-actions">
+      <a href="https://wa.me/972523124326?text=היי,%20אשמח%20לקבוע%20פגישת%20היכרות%20עם%20Agentica" class="btn-primary" target="_blank">פגישת היכרות — 45 דקות</a>
+      <a href="#about" class="btn-outline">מי אנחנו</a>
+    </div>
+  </div>
+  <div class="hero-scroll"><div class="scroll-line"></div></div>
+</section>
+
+<!-- ── WHY NOW ── -->
+<section class="why-now">
+  <div class="container">
+    <div class="why-header">
+      <div class="gold-divider fade-in"><div class="gold-divider-line"></div><div class="gold-divider-mark"></div><div class="gold-divider-line"></div></div>
+      <span class="section-label fade-in">למה עכשיו</span>
+      <h2 class="section-title fade-in">הציפיות של הלקוחות השתנו.<br />חווית הלקוח נשארה מאחור.</h2>
+      <p class="section-sub fade-in">בעידן בו הלקוחות מצפים להיפר פרסונליזציה, חוויה ושירות ברמה גבוהה — נדרשת הסתכלות מחדש על מסע הלקוח שתענה על כל הדרישות שלהם.</p>
+    </div>
+    <div class="why-grid">
+      <div class="why-card fade-in delay-1">
+        <div class="why-icon">
+          <!-- Clock / immediacy -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="#C4973A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15.5 14"/>
+          </svg>
+        </div>
+        <h3>מיידיות</h3>
+        <p>לקוחות לא מחכים. כל חיכוך שלא נפתר ברגע — הוא הזדמנות שהלכה לתחרות.</p>
+      </div>
+      <div class="why-card fade-in delay-2">
+        <div class="why-icon">
+          <!-- Star / experience -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="#C4973A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+          </svg>
+        </div>
+        <h3>חוויה</h3>
+        <p>חוויה שמרגישה אישית, רציפה וחכמה — בכל נקודת מגע, בכל ערוץ, בכל שעה.</p>
+      </div>
+      <div class="why-card fade-in delay-3">
+        <div class="why-icon">
+          <!-- Arrow up / growth -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="#C4973A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/>
+          </svg>
+        </div>
+        <h3>צמיחה</h3>
+        <p>חוויית לקוח היא מנוע צמיחה — Conversion, נאמנות, גודל סל וחזרה שוב ושוב.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── WHAT WE DO ── -->
+<section class="what-we-do" id="services">
+  <div class="container">
+    <div class="what-header">
+      <div class="gold-divider fade-in"><div class="gold-divider-line"></div><div class="gold-divider-mark"></div><div class="gold-divider-line"></div></div>
+      <span class="section-label fade-in">מה אנחנו עושות</span>
+      <h2 class="section-title fade-in">מגדירות מחדש חווית לקוח<br />ובונות את ה-Agents שיישמו אותה</h2>
+      <p class="section-sub fade-in">אנחנו מביאות הסתכלות עסקית עמוקה — מבינות את הלקוח, את התהליך, ואת נקודות הערך. ומשם בונות מערכות Agents שמפעילות את האסטרטגיה במציאות.</p>
+    </div>
+
+    <div class="process-flow">
+      <div class="flow-step fade-in delay-1">
+        <div class="flow-step-num">01</div>
+        <h3>אסטרטגיה וחוויה</h3>
+        <p>מבינות את הלקוח שלכם ומעצבות את מסע החוויה מחדש מקצה לקצה</p>
+      </div>
+
+      <div class="flow-arrow fade-in delay-2">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/>
+        </svg>
+      </div>
+
+      <div class="flow-step fade-in delay-2">
+        <div class="flow-step-num">02</div>
+        <h3>בניית Agents</h3>
+        <p>בונות את ה-Agents שמפעילים את האסטרטגיה — מרעיון למערכת חיה</p>
+      </div>
+
+      <div class="flow-arrow fade-in delay-3">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/>
+        </svg>
+      </div>
+
+      <div class="flow-step fade-in delay-3">
+        <div class="flow-step-num">03</div>
+        <h3>מדידה ופיתוח</h3>
+        <p>מערכת שמתפתחת ונמדדת — לא פרויקט חד-פעמי אלא ערך מתמשך</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SOLUTIONS ── -->
+<section class="solutions" id="solutions">
+  <div class="container">
+    <div class="solutions-header">
+      <span class="section-label fade-in">תחומי פתרונות</span>
+      <h2 class="section-title fade-in">פתרונות יישימים<br />לכל פונקציה בארגון</h2>
+      <p class="section-sub fade-in">מגוון רחב של Agents שניתן לישם בתחומים שונים בארגון — מכירות, שירות, לוגיסטיקה, HR ועוד. נזהה יחד איפה הערך הגדול ביותר עבורכם.</p>
+    </div>
+    <div class="solutions-grid">
+
+      <div class="sol-card fade-in delay-1">
+        <div class="sol-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#C4973A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/>
+            <path d="M16 10a4 4 0 01-8 0"/>
+          </svg>
+        </div>
+        <h3>קמעונאות ומסחר</h3>
+        <p>Agents לקנייה אישית, חיפוש בשפה טבעית, חיזוי ביקושים ואופטימיזציית שרשרת אספקה.</p>
+        <div class="sol-tag"><span class="tag">B2B</span><span class="tag">B2C</span></div>
+      </div>
+
+      <div class="sol-card fade-in delay-2">
+        <div class="sol-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#C4973A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>
+          </svg>
+        </div>
+        <h3>שירותים פיננסיים</h3>
+        <p>אישורים מהירים, טיפול חכם בתביעות, זיהוי הזדמנויות ואיתור הונאות בזמן אמת.</p>
+        <div class="sol-tag"><span class="tag">B2B</span><span class="tag">B2C</span></div>
+      </div>
+
+      <div class="sol-card fade-in delay-3">
+        <div class="sol-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#C4973A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+          </svg>
+        </div>
+        <h3>שירות לקוחות</h3>
+        <p>Agents שפותרים עצמאית את רוב הפניות, עם העברה חלקה לנציג ותמיכה בזמן אמת.</p>
+        <div class="sol-tag"><span class="tag">B2B</span><span class="tag">B2C</span></div>
+      </div>
+
+      <div class="sol-card fade-in delay-1">
+        <div class="sol-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#C4973A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.68A2 2 0 012 .99h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/>
+          </svg>
+        </div>
+        <h3>תקשורת ומדיה</h3>
+        <p>Acquisition חכם, התאמת חבילות בזמן אמת וניהול מחזור חיי לקוח מלא.</p>
+        <div class="sol-tag"><span class="tag">B2B</span><span class="tag">B2C</span></div>
+      </div>
+
+      <div class="sol-card fade-in delay-2">
+        <div class="sol-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#C4973A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+          </svg>
+        </div>
+        <h3>מכירות ושיווק</h3>
+        <p>סוכני BDR שמאתרים לידים, יועצי קנייה אישיים ו-Upsell מבוסס הקשר.</p>
+        <div class="sol-tag"><span class="tag">B2B</span><span class="tag">B2C</span></div>
+      </div>
+
+      <div class="sol-card fade-in delay-3">
+        <div class="sol-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#C4973A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
+            <circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+          </svg>
+        </div>
+        <h3>לוגיסטיקה</h3>
+        <p>זיהוי חריגות מוקדם, ניהול רכש מקצה לקצה ו-Last Mile חכם עם דיוק גבוה.</p>
+        <div class="sol-tag"><span class="tag">B2B</span><span class="tag">B2C</span></div>
+      </div>
+
+      <div class="sol-card fade-in delay-1">
+        <div class="sol-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#C4973A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/>
+          </svg>
+        </div>
+        <h3>משאבי אנוש</h3>
+        <p>גיוס חכם, חיזוי נטישת עובדים, מסלולי הכשרה אישיים ו-Onboarding בשפה טבעית.</p>
+        <div class="sol-tag"><span class="tag">פנים-ארגוני</span></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── PROCESS 4-STEPS ── -->
+<section class="steps-section" id="process">
+  <div class="container">
+    <div class="steps-header">
+      <span class="section-label fade-in">איך עובדות</span>
+      <h2 class="section-title fade-in">ארבעה שלבים.<br />כל אחד עומד בפני עצמו.</h2>
+      <p class="section-sub fade-in">אפשר להיכנס בכל שלב שמתאים — לא חייבים לעשות הכל.</p>
+    </div>
+    <div class="four-steps">
+      <div class="step fade-in delay-1">
+        <div class="step-num">01</div>
+        <div class="step-subtitle">הבנה</div>
+        <h3>הרצאת השראה + מיפוי</h3>
+        <p>הרצאה חיה ומסמך עם 5–7 הזדמנויות ספציפיות לארגון שלכם.</p>
+        <div class="step-meta">⏱ שבועיים</div>
+      </div>
+      <div class="step fade-in delay-2">
+        <div class="step-num">02</div>
+        <div class="step-subtitle">אבחון</div>
+        <h3>מיפוי חוויה לעומק</h3>
+        <p>דוח עם 10–15 הזדמנויות מדורגות והמלצה על 2–3 להעמקה.</p>
+        <div class="step-meta">⏱ שלושה שבועות</div>
+      </div>
+      <div class="step fade-in delay-3">
+        <div class="step-num">03</div>
+        <div class="step-subtitle">עיצוב</div>
+        <h3>ספרינט עיצוב מחדש</h3>
+        <p>חוויה מעוצבת, Blueprint של ה-Agents, Business Case ותוכנית הטמעה.</p>
+        <div class="step-meta">⏱ 4–6 שבועות</div>
+      </div>
+      <div class="step fade-in delay-4">
+        <div class="step-num">04</div>
+        <div class="step-subtitle">בנייה</div>
+        <h3>מערכת Agents חיה</h3>
+        <p>בנייה והטמעה של מערכת Agents — מודדת, מתפתחת, חיה.</p>
+        <div class="step-meta">⏱ לפי היקף</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── WHY US ── -->
+<section class="why-us">
+  <div class="container">
+    <div class="why-us-header">
+      <span class="section-label fade-in">למה אנחנו</span>
+      <h2 class="section-title fade-in">כי אנחנו משלבות<br />יצירתיות, הבנה עסקית וטכנולוגיה</h2>
+    </div>
+    <div class="why-us-intro fade-in">
+      אנחנו לא מייעצות בלבד — ולא רק בונות. אנחנו <strong>מביאות יצירתיות</strong> לתכנון החוויה, <strong>הבנה עסקית עמוקה</strong> לכל פרויקט, <strong>וידע טכנולוגי אמיתי</strong> שמתורגם למערכת חיה.
+    </div>
+    <div class="differentiators">
+      <div class="diff-card fade-in delay-1">
+        <div class="diff-num">01</div>
+        <h3>יצירתיות בתכנון החוויה</h3>
+        <p>מגיעות מעולם העיצוב, החדשנות והאסטרטגיה — לא מהטכנולוגיה. הלקוח במרכז כל החלטה.</p>
+      </div>
+      <div class="diff-card fade-in delay-2">
+        <div class="diff-num">02</div>
+        <h3>הבנה עסקית עמוקה</h3>
+        <p>עשרות שנים בארגונים מובילים — מבינות את ה-KPIs, את התהליכים ואת מה שבאמת עובד.</p>
+      </div>
+      <div class="diff-card fade-in delay-3">
+        <div class="diff-num">03</div>
+        <h3>ידע טכנולוגי שמתורגם לפועל</h3>
+        <p>בונות את ה-Agents בעצמנו. האסטרטגיה לא נשארת מצגת — היא הופכת למערכת חיה.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── ABOUT ── -->
+<section class="about" id="about">
+  <div class="container">
+    <div class="about-header">
+      <span class="section-label fade-in">מי אנחנו</span>
+      <h2 class="section-title fade-in">שתי מומחיות.<br />חוויה אחת שלמה.</h2>
+    </div>
+    <div class="team-grid">
+      <div class="team-card fade-in delay-1">
+        <div class="team-photo-wrap">
+          <img src="ariella_cropped.jpg" alt="אריאלה דניאלי" style="object-position: center 15%;" />
+        </div>
+        <div class="team-info">
+          <h3>אריאלה דניאלי</h3>
+          <div class="team-role">אסטרטגיה, חדשנות ו-AI</div>
+          <p>יועצת ומרצה לחדשנות עם מעל 25 שנות ניסיון באסטרטגיה, שיווק וניהול דיגיטל בחברות מובילות — תנובה, שטראוס, יוניליוור, עזריאלי ובזק בינלאומי. מתמחה בייזום רעיונות חדשניים ותרגומם לצמיחה.</p>
+          <div class="team-tags">
+            <span class="team-tag">אסטרטגיה</span>
+            <span class="team-tag">שיווק דיגיטלי</span>
+            <span class="team-tag">חדשנות</span>
+            <span class="team-tag">AI</span>
+          </div>
+        </div>
+      </div>
+      <div class="team-card fade-in delay-2">
+        <div class="team-photo-wrap">
+          <img src="lior.jpeg" alt="ליאור" />
+        </div>
+        <div class="team-info">
+          <h3>ליאור</h3>
+          <div class="team-role">AI, טכנולוגיה וסקייל</div>
+          <p>מייסדת ומנכ"לית AIforAll — מחברת בין אנשים לטכנולוגיית AI. מרצה לקורס "כלים ופרקטיקה עם AI" בטכניון. יזמת בית (EIR) בקרן הון הסיכון The Garage. מנטורית ויועצת ליזמים ולחברות סטארטאפ בגוגל.</p>
+          <div class="team-tags">
+            <span class="team-tag">AI Agents</span>
+            <span class="team-tag">טכנולוגיה</span>
+            <span class="team-tag">יזמות</span>
+            <span class="team-tag">הטכניון</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA ── -->
+<section class="cta-section" id="contact">
+  <div class="container">
+    <span class="section-label fade-in">הצעד הבא</span>
+    <h2 class="fade-in">45 דקות שיכולות<br />לשנות את החוויה שלכם</h2>
+    <p class="fade-in">פגישת היכרות ללא עלות — נכיר את הארגון, נבין איפה אתם, ונציע את נקודת ההתחלה הנכונה.</p>
+    <a href="https://wa.me/972523124326?text=היי,%20אשמח%20לקבוע%20פגישת%20היכרות%20עם%20Agentica" class="wa-btn-large fade-in" target="_blank">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      שלחו הודעה ב-WhatsApp
+    </a>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <img src="Agentica_transparent.png" alt="Agentica" />
+  <p>© 2025 Agentica · agentic-a.com · Customer Experience. AI Agents. Scale.</p>
+</footer>
+
+<!-- ── WHATSAPP FLOAT ── -->
+<a class="wa-float" href="https://wa.me/972523124326?text=היי,%20אשמח%20לשמוע%20עוד%20על%20Agentica" target="_blank" aria-label="WhatsApp">
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+<script>
+  // Navbar scroll
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 60);
+  });
+
+  // Video dissolve → reveal content
+  const heroVideo = document.querySelector('.hero-video');
+  const hero = document.querySelector('.hero');
+
+  function triggerReveal() {
+    hero.classList.add('video-done');
+    setTimeout(() => hero.classList.add('content-visible'), 1400);
+  }
+
+  if (heroVideo) {
+    heroVideo.removeAttribute('loop');
+    heroVideo.addEventListener('ended', triggerReveal);
+    // Fallback: if video fails to load
+    heroVideo.addEventListener('error', triggerReveal);
+  } else {
+    triggerReveal();
+  }
+
+  // Fade-in on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
