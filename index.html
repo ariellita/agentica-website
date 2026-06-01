@@ -521,7 +521,33 @@
        WHY US — LIGHT
     ───────────────────────────────────── */
     .why-us { background: var(--white); }
-    .why-us-header { max-width: 680px; margin-bottom: 3.5rem; }
+    .why-us-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+    }
+    .why-us-photo {
+      position: relative;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-hover);
+    }
+    .why-us-photo img {
+      width: 100%;
+      height: 520px;
+      object-fit: cover;
+      object-position: center top;
+      display: block;
+    }
+    .why-us-photo::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(198,170,103,.25);
+    }
+    .why-us-header { margin-bottom: 2rem; }
     .why-us-intro {
       font-size: 1.15rem;
       font-weight: 500;
@@ -726,20 +752,53 @@
         gap: 0;
       }
       .flow-arrow { transform: rotate(90deg); padding: .4rem 0; }
+      .what-layout { grid-template-columns: 1fr !important; gap: 2rem; }
     }
+
     @media (max-width: 768px) {
-      .navbar { padding: 1rem 1.4rem; }
-      .navbar.scrolled { padding: .8rem 1.4rem; }
-      section { padding: 4.5rem 1.3rem; }
-      .hero { padding: 0 1.4rem 6rem; }
+      /* ── Logo & nav ── */
+      .nav-logo { top: 10px; right: 12px; }
+      .nav-logo img { height: 90px; }
+      .nav-cta { top: 14px; left: 12px; font-size: .8rem; padding: .5rem 1rem; }
+
+      /* ── Navbar ── */
+      .navbar { padding: .8rem 1rem; }
+      .navbar.scrolled { padding: .6rem 1rem; }
+
+      /* ── General sections ── */
+      section { padding: 3.5rem 1.2rem; }
+      .section-title { font-size: clamp(1.6rem, 6vw, 2.2rem); }
+
+      /* ── Hero ── */
+      .hero { padding: 5rem 1.2rem 3rem; min-height: 100svh; }
+      .hero h1 { font-size: clamp(2rem, 8vw, 3rem); }
+      .hero-sub { font-size: .95rem; }
       .hero-actions { flex-direction: column; align-items: center; }
       .btn-primary, .btn-outline { width: 100%; text-align: center; }
+
+      /* ── Grids → 1 col ── */
       .team-grid { grid-template-columns: 1fr; }
-      .team-photo-wrap { height: 260px; }
+      .team-photo-wrap { height: 280px; }
       .four-steps { grid-template-columns: 1fr; }
       .solutions-grid { grid-template-columns: 1fr; }
       .why-grid { grid-template-columns: 1fr; }
       .differentiators { grid-template-columns: 1fr; }
+      .why-us-layout { grid-template-columns: 1fr; gap: 2rem; }
+      .why-us-photo img { height: 300px; }
+      .why-us-photo { order: -1; } /* photo on top on mobile */
+
+      /* ── Process flow ── */
+      .process-flow { grid-template-columns: 1fr; gap: 0; }
+      .flow-arrow { transform: rotate(90deg); padding: .4rem 0; }
+
+      /* ── CTA ── */
+      .wa-btn-large { font-size: 1rem; padding: 1rem 2rem; width: 100%; justify-content: center; }
+
+      /* ── WhatsApp float ── */
+      .wa-float { bottom: 1.2rem; left: 1.2rem; width: 50px; height: 50px; }
+
+      /* ── Footer ── */
+      footer { padding: 2rem 1rem; }
     }
 
     /* ─────────────────────────────────────
@@ -1069,29 +1128,41 @@
 <!-- ── WHY US ── -->
 <section class="why-us">
   <div class="container">
-    <div class="why-us-header">
-      <span class="section-label fade-in">למה אנחנו</span>
-      <h2 class="section-title fade-in">כי אנחנו משלבות<br />יצירתיות, הבנה עסקית וטכנולוגיה</h2>
-    </div>
-    <div class="why-us-intro fade-in">
-      אנחנו לא מייעצות בלבד — ולא רק בונות. אנחנו <strong>מביאות יצירתיות</strong> לתכנון החוויה, <strong>הבנה עסקית עמוקה</strong> לכל פרויקט, <strong>וידע טכנולוגי אמיתי</strong> שמתורגם למערכת חיה.
-    </div>
-    <div class="differentiators">
-      <div class="diff-card fade-in delay-1">
-        <div class="diff-num">01</div>
-        <h3>יצירתיות בתכנון החוויה</h3>
-        <p>מגיעות מעולם העיצוב, החדשנות והאסטרטגיה — לא מהטכנולוגיה. הלקוח במרכז כל החלטה.</p>
+    <div class="why-us-layout">
+
+      <!-- תוכן מימין -->
+      <div class="why-us-content">
+        <div class="why-us-header">
+          <span class="section-label fade-in">למה אנחנו</span>
+          <h2 class="section-title fade-in">כי אנחנו משלבות<br />יצירתיות, הבנה עסקית וטכנולוגיה</h2>
+        </div>
+        <div class="why-us-intro fade-in">
+          אנחנו לא מייעצות בלבד — ולא רק בונות. אנחנו <strong>מביאות יצירתיות</strong> לתכנון החוויה, <strong>הבנה עסקית עמוקה</strong> לכל פרויקט, <strong>וידע טכנולוגי אמיתי</strong> שמתורגם למערכת חיה.
+        </div>
+        <div class="differentiators">
+          <div class="diff-card fade-in delay-1">
+            <div class="diff-num">01</div>
+            <h3>יצירתיות בתכנון החוויה</h3>
+            <p>מגיעות מעולם העיצוב, החדשנות והאסטרטגיה — לא מהטכנולוגיה. הלקוח במרכז כל החלטה.</p>
+          </div>
+          <div class="diff-card fade-in delay-2">
+            <div class="diff-num">02</div>
+            <h3>הבנה עסקית עמוקה</h3>
+            <p>עשרות שנים בארגונים מובילים — מבינות את ה-KPIs, את התהליכים ואת מה שבאמת עובד.</p>
+          </div>
+          <div class="diff-card fade-in delay-3">
+            <div class="diff-num">03</div>
+            <h3>ידע טכנולוגי שמתורגם לפועל</h3>
+            <p>בונות את ה-Agents בעצמנו. האסטרטגיה לא נשארת מצגת — היא הופכת למערכת חיה.</p>
+          </div>
+        </div>
       </div>
-      <div class="diff-card fade-in delay-2">
-        <div class="diff-num">02</div>
-        <h3>הבנה עסקית עמוקה</h3>
-        <p>עשרות שנים בארגונים מובילים — מבינות את ה-KPIs, את התהליכים ואת מה שבאמת עובד.</p>
+
+      <!-- תמונה משמאל -->
+      <div class="why-us-photo fade-in">
+        <img src="אריאלה וליאור.png" alt="אריאלה וליאור" />
       </div>
-      <div class="diff-card fade-in delay-3">
-        <div class="diff-num">03</div>
-        <h3>ידע טכנולוגי שמתורגם לפועל</h3>
-        <p>בונות את ה-Agents בעצמנו. האסטרטגיה לא נשארת מצגת — היא הופכת למערכת חיה.</p>
-      </div>
+
     </div>
   </div>
 </section>
